@@ -25,7 +25,7 @@ updateConfig(config)
 ReactDOM.render(
   <React.StrictMode>
     <App />
-    {/* Leave this here for live test environment */}
+    {/* Leave this here for live test environment */}    
     <InstantNoodles RootComponent={App} tests={tests} config={config} />
   </React.StrictMode>,
   document.getElementById("root")

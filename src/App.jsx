@@ -2,6 +2,15 @@ import * as React from "react"
 // IMPORT ANY NEEDED COMPONENTS HERE
 import { Dataset } from "./data/dataset"
 import "./App.css"
+import Header from "./components/Header/Header"
+import Instructions from "./components/Instructions/Instructions"
+import Chip from "./components/Chip/Chip"
+import NutritionalLabel from "./components/NutritionalLabel/NutritionalLabel"
+import CategoriesColumn  from "./components/CategoriesColumn/CategoriesColumn"
+import { useState } from "react"
+import RestaurantsRow from "./components/RestaurantsRows/RestaurantsRows"
+import MenuDisplay from "./components/MenuDisplay/MenuDisplay"
+import DataSource from "./components/DataSource/DataSource"
 
 // don't move this!
 export const appInfo = {
@@ -19,45 +28,70 @@ export const appInfo = {
 }
 // or this!
 
-export function App() {
+export function App() {  
   const { data, categories, restaurants } = Dataset.createDataSet()
-
+  const [category, setCategory] = useState(null)
+  const [restaurant, setRestaurant] = useState(null)
+  const [menuItem, setMenuItem] = useState(null)
+  let currentMenuItems = data.filter(item => (item.food_category === category && item.restaurant === restaurant)) 
+  let instructionKey
+  if (category && restaurant) {
+    if (menuItem) {
+      instructionKey = "allSelected"
+    } else {
+      instructionKey = "noSelectedItem"
+    }    
+  } else if (category) {
+    instructionKey = "onlyCategory"
+  } else if (restaurant) {
+    instructionKey = "onlyRestaurant"
+  } else {
+    instructionKey = "start"
+  }  
+  const handleClickCategory = (label) => {
+    setCategory(label)
+    
+  }
+  const handleClickRestaurant = (restaurant) => {
+    setRestaurant(restaurant)
+    
+  }
+  const handleClickMenuItem = (menuItem) => {
+    setMenuItem(menuItem)
+  }
+  const handleDeselectMenuItem = (event) => {    
+    setMenuItem(null)
+    event.stopPropagation();    
+  }
+  const handleDeselectCategory = (event) => {    
+    setCategory(null)
+    event.stopPropagation();  
+  }
+  const handleDeselectRestaurant = (event) => {
+    setRestaurant(null)
+    event.stopPropagation();
+  }
   return (
     <main className="App">
       {/* CATEGORIES COLUMN */}
-      <div className="CategoriesColumn col">
-        <div className="categories options">
-          <h2 className="title">Categories</h2>
-          {/* YOUR CODE HERE */}
-        </div>
-      </div>
-
+      <CategoriesColumn categories={categories} category={category} onClick={handleClickCategory} deselectItem={handleDeselectCategory}/>
+      
       {/* MAIN COLUMN */}
       <div className="container">
         {/* HEADER GOES HERE */}
+        <Header title={appInfo.title} tagline={appInfo.tagline} description={appInfo.description}/>
 
         {/* RESTAURANTS ROW */}
-        <div className="RestaurantsRow">
-          <h2 className="title">Restaurants</h2>
-          <div className="restaurants options">{/* YOUR CODE HERE */}</div>
-        </div>
+        <RestaurantsRow restaurants={restaurants} restaurant={restaurant} onClick={handleClickRestaurant} deselectItem={handleDeselectRestaurant}/>       
 
         {/* INSTRUCTIONS GO HERE */}
+        <Instructions instructions={appInfo.instructions[instructionKey]}/>
 
         {/* MENU DISPLAY */}
-        <div className="MenuDisplay display">
-          <div className="MenuItemButtons menu-items">
-            <h2 className="title">Menu Items</h2>
-            {/* YOUR CODE HERE */}
-          </div>
+        <MenuDisplay currentMenuItems={currentMenuItems} menuItem={menuItem} onClick={handleClickMenuItem} deselectItem={handleDeselectMenuItem}/>         
 
-          {/* NUTRITION FACTS */}
-          <div className="NutritionFacts nutrition-facts">{/* YOUR CODE HERE */}</div>
-        </div>
-
-        <div className="data-sources">
-          <p>{appInfo.dataSource}</p>
-        </div>
+        {/* DATA SOURCES */}
+        <DataSource dataSource={appInfo.dataSource}/>
       </div>
     </main>
   )

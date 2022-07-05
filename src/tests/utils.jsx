@@ -207,6 +207,7 @@ export function configureSpecSuiteWithUtils(App) {
     render,
     componentTree,
     fireEvent,
+    cleanup,
     // queryHelpers,
     parseUtils,
     // buildQueries,
@@ -223,6 +224,9 @@ export function configureSpecSuiteWithUtils(App) {
 
   const customQueries = {
     // ...whatever custom queries might work here
+    getAllChipButtons: (container) => container.querySelector(".chip"),
+    getInstructionsAside: (container) => container.querySelector(".instructions"),
+    getHeaderElement: (container) => container.querySelector(".header"),
     getMenuItemsDiv: (container) => container.querySelector(".menu-items"),
     getNutritionalLabel: (container) => container.querySelector("div.nutritional-label"),
   }
@@ -240,6 +244,7 @@ export function configureSpecSuiteWithUtils(App) {
     render,
     componentTree,
     fireEvent,
+    cleanup,
     customQueries: advancedCustomQueries,
     bootstrapTestSuiteContext,
     parseUtils,
